@@ -7,4 +7,8 @@
     <item android:id="@+id/debug2"
         android:title="2->3"
         myApp:showAsAction="always" />
+
+    <item android:id="@+id/debug3"
+        android:title="DiffUtil"
+        myApp:showAsAction="always" />
 </menu>

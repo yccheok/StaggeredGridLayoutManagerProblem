@@ -2,6 +2,7 @@ package noteplus.yocto.com.myapplication;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.Menu;
@@ -62,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-            case R.id.debug:
+            case R.id.debug: {
 
                 Data data0 = datas.get(0);
                 Data data1 = datas.get(1);
@@ -73,7 +74,8 @@ public class MainActivity extends AppCompatActivity {
                 adapter.notifyItemMoved(0, 1);
 
                 return true;
-
+            }
+            
             case R.id.debug2:
 
                 Data data2 = datas.get(2);
@@ -86,8 +88,54 @@ public class MainActivity extends AppCompatActivity {
 
                 return true;
 
+            case R.id.debug3: {
+                List<Data> oldDatas = new ArrayList<>(datas);
+
+                Data data0 = datas.get(0);
+                Data data1 = datas.get(1);
+
+                datas.set(0, data1);
+                datas.set(1, data0);
+
+                MyNoteDiffUtilCallback noteDiffUtilCallback = new MyNoteDiffUtilCallback(datas, oldDatas);
+                DiffUtil.calculateDiff(noteDiffUtilCallback).dispatchUpdatesTo(adapter);
+
+                return true;
+            }
+                
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public class MyNoteDiffUtilCallback extends DiffUtil.Callback {
+        private List<Data> newsDatas;
+        private List<Data> oldDatas;
+
+
+        public MyNoteDiffUtilCallback(List<Data> newsDatas, List<Data> oldDatas) {
+            this.newsDatas = newsDatas;
+            this.oldDatas = oldDatas;
+        }
+
+        @Override
+        public int getOldListSize() {
+            return oldDatas.size();
+        }
+
+        @Override
+        public int getNewListSize() {
+            return newsDatas.size();
+        }
+
+        @Override
+        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+            return oldDatas.get(oldItemPosition).id == newsDatas.get(newItemPosition).id;
+        }
+
+        @Override
+        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            return oldDatas.get(oldItemPosition).equals(newsDatas.get(newItemPosition));
         }
     }
 }
